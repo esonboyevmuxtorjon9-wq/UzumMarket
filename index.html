@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Uzum Market — Rasmiy Sayt va Telegram Bozor</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --uzum-purple: #7000FF;
+      --uzum-purple-dark: #5500C4;
+      --uzum-purple-light: #F2E8FF;
+      --bg-gray: #F2F4F7;
+      --card-white: #FFFFFF;
+      --text-main: #1F2026;
+      --text-muted: #7E818C;
+      --green: #00B85C;
+      --red: #F5222D;
+      --orange: #FA8C16;
+      --border: #E6E8ED;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg-gray);
+      color: var(--text-main);
+      padding-bottom: 82px;
+      overflow-x: hidden;
+    }
+
+    .app-shell {
+      max-width: 680px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: var(--bg-gray);
+      position: relative;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      background: var(--card-white);
+      padding: 10px 14px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+
+    .location-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .loc-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .sync-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      display: inline-block;
+    }
+
+    .role-pill {
+      background: var(--uzum-purple-light);
+      color: var(--uzum-purple);
+      padding: 5px 11px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .role-pill.admin {
+      background: #1F2026;
+      color: #FFD700;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .search-box {
+      flex: 1;
+      background: #EDEFF2;
+      border-radius: 10px;
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .search-box input {
+      border: none;
+      background: transparent;
+      width: 100%;
+      font-size: 14px;
+      outline: none;
+      color: var(--text-main);
+    }
+
+    /* Banner */
+    .promo-banner {
+      margin: 12px 14px;
+      background: linear-gradient(135deg, #7000FF 0%, #9E47FF 100%);
+      border-radius: 16px;
+      padding: 16px;
+      color: #fff;
+    }
+
+    .promo-banner h2 {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .promo-banner p {
+      font-size: 13px;
+      opacity: 0.94;
+      margin-bottom: 10px;
+      line-height: 1.35;
+    }
+
+    .promo-btn {
+      background: #fff;
+      color: var(--uzum-purple);
+      border: none;
+      padding: 8px 14px;
+      border-radius: 9px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    /* Quick Categories */
+    .quick-cats {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      padding: 10px 14px 12px;
+      background: var(--card-white);
+      margin-bottom: 10px;
+    }
+
+    .q-cat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .q-cat-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: #F4F5F8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 21px;
+    }
+
+    .q-cat span {
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    /* Section Header */
+    .section-header {
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-header h3 {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    /* Product Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding: 0 14px 14px;
+    }
+
+    .p-card {
+      background: var(--card-white);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .p-img {
+      height: 145px;
+      background: #F6F7FA;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 52px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .p-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .p-badge {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      background: var(--uzum-purple);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+
+    .p-body {
+      padding: 10px;
+    }
+
+    .p-title {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.3;
+      height: 34px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+
+    .p-seller {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .p-installment {
+      background: #FFF3B0;
+      color: #1F2026;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 5px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    .p-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .p-price {
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .add-cart-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      font-size: 17px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .add-cart-btn:active {
+      background: var(--uzum-purple);
+      color: #fff;
+    }
+
+    /* Pages */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* Cards & Forms */
+    .form-card {
+      background: var(--card-white);
+      margin: 10px 14px;
+      border-radius: 16px;
+      padding: 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: #F2F4F7;
+      border: 1.5px solid transparent;
+      border-radius: 12px;
+      padding: 11px 13px;
+      font-size: 14px;
+      outline: none;
+      color: var(--text-main);
+    }
+
+    .form-input:focus, .form-textarea:focus {
+      border-color: var(--uzum-purple);
+      background: #fff;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--uzum-purple);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 13px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      background: #E6E8ED;
+      color: var(--text-main);
+      border: none;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .btn-green {
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-red {
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .info-box {
+      background: #F6F0FF;
+      border: 1px solid #D9BFFF;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 13px;
+      margin: 10px 0;
+      line-height: 1.45;
+    }
+
+    .loc-box {
+      background: #EEFBF3;
+      border: 1px solid #B7EB8F;
+      border-radius: 12px;
+      padding: 12px;
+      margin: 10px 0;
+    }
+
+    /* Status Badges */
+    .status-pill {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .status-pending { background: #FFF7E6; color: #D46B08; border: 1px solid #FFD591; }
+    .status-approved { background: #F6FFED; color: #389E0D; border: 1px solid #B7EB8F; }
+    .status-rejected { background: #FFF1F0; color: #CF1322; border: 1px solid #FFA39E; }
+
+    /* Cart Qty Controls */
+    .qty-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .qty-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #F2F4F7;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    /* Catalog & Profile Lists */
+    .menu-card {
+      background: var(--card-white);
+      margin: 10px 14px;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .menu-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .menu-row:last-child { border-bottom: none; }
+
+    .profile-hero {
+      background: linear-gradient(135deg, #7000FF, #5200B8);
+      color: #fff;
+      padding: 20px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .avatar-circle {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 800;
+      border: 2px solid #fff;
+    }
+
+    /* Face ID Box */
+    .face-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 14px;
+      background: #14151A;
+      border-radius: 16px;
+      color: #fff;
+      margin: 10px 0;
+    }
+
+    .face-ring {
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      border: 4px dashed var(--uzum-purple);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #222;
+      margin-bottom: 10px;
+    }
+
+    .face-ring.verified { border: 4px solid var(--green); }
+    .face-ring video, .face-ring img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Admin Stat Grid */
+    .admin-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .stat-box {
+      background: #F8F9FB;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .stat-box .val {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--uzum-purple);
+      margin-top: 4px;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 680px;
+      background: var(--card-white);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding: 6px 0 8px;
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .nav-item.active { color: var(--uzum-purple); }
+    .nav-icon { font-size: 20px; }
+
+    .cart-badge {
+      position: absolute;
+      top: -2px;
+      right: 18px;
+      background: #1F2026;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 10px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 200;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal-sheet {
+      background: #fff;
+      width: 100%;
+      max-width: 680px;
+      max-height: 92vh;
+      overflow-y: auto;
+      border-radius: 22px 22px 0 0;
+      padding: 20px 16px 28px;
+    }
+
+    .role-choice-card {
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 15px;
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+
+    .role-choice-card:hover {
+      border-color: var(--uzum-purple);
+      background: var(--uzum-purple-light);
+    }
+
+    .toast {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1F2026;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 300;
+      display: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      max-width: 92%;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <div id="toast" class="toast"></div>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="location-row">
+      <div class="loc-left" onclick="switchPage('cart')">
+        <span class="sync-dot" title="Sinxronlangan"></span>
+        <span>📍 <span id="userCity">Joylashuvni tanlang</span> ▾</span>
+      </div>
+      <div id="roleBadge" class="role-pill" onclick="openRoleModal()">Ro'yxatdan o'tish</div>
+    </div>
+    <div class="search-row">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="searchInput" placeholder="Mahsulot va toifalarni qidirish..." oninput="renderProducts()" />
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 1: BOSH SAHIFA -->
+  <div id="page-home" class="page active">
+    <div class="promo-banner">
+      <h2>Uzum Market — Rasmiy Bozor</h2>
+      <p id="bannerSubtitle">Uzum Market — Telegram Bozor! Sotib oling va soting!</p>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="promo-btn" onclick="openRoleModal()">Sotuvchi / Xaridor bo‘lish</button>
+        <button class="promo-btn" style="background:rgba(255,255,255,0.2); color:#fff;" onclick="pullCloudSync(true)">🔄 Yangilash</button>
+      </div>
+    </div>
+
+    <div class="quick-cats">
+      <div class="q-cat" onclick="filterByCat('Elektronika')">
+        <div class="q-cat-icon">🎧</div>
+        <span>Elektronika</span>
+      </div>
+      <div class="q-cat" onclick="filterByCat('Kiyim')">
+        <div class="q-cat-icon">🧥</div>
+        <span>Moda</span>
+      </div>
+      <div class="q-cat" onclick="filterByCat('Maishiy texnika')">
+        <div class="q-cat-icon">🧺</div>
+        <span>Texnika</span>
+      </div>
+      <div class="q-cat" onclick="filterByCat('Avtotovarlar')">
+        <div class="q-cat-icon">🚗</div>
+        <span>Avto</span>
+      </div>
+      <div class="q-cat" onclick="filterByCat('All')">
+        <div class="q-cat-icon">🔥</div>
+        <span>Barchasi</span>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <h3>Mashhur mahsulotlar</h3>
+      <span style="font-size:12px; color:var(--uzum-purple); font-weight:700; cursor:pointer;" onclick="filterByCat('All')">Hammasi ›</span>
+    </div>
+
+    <div id="productGrid" class="product-grid"></div>
+  </div>
+
+  <!-- PAGE 2: KATALOG -->
+  <div id="page-catalog" class="page">
+    <div class="section-header">
+      <h3>Katalog</h3>
+    </div>
+    <div class="menu-card" id="categoryList"></div>
+  </div>
+
+  <!-- PAGE 3: SAVAT + LOKATSIYA + CHEK YUBORISH -->
+  <div id="page-cart" class="page">
+    <div class="section-header">
+      <h3>Savat va Buyurtma berish</h3>
+    </div>
+    <div id="cartContainer" class="form-card"></div>
+
+    <div class="section-header">
+      <h3>🧾 Yuborilgan cheklar va buyurtmalarim</h3>
+    </div>
+    <div id="myOrdersContainer" class="form-card"></div>
+  </div>
+
+  <!-- PAGE 4: SOTUVCHI KABINETI -->
+  <div id="page-seller" class="page">
+    <div class="section-header">
+      <h3>Sotuvchi markazi</h3>
+    </div>
+    <div id="sellerContent"></div>
+  </div>
+
+  <!-- PAGE 5: PROFIL VA ADMIN PANEL -->
+  <div id="page-profile" class="page">
+    <div class="profile-hero">
+      <div class="avatar-circle" id="profAvatar">U</div>
+      <div>
+        <div style="font-size:18px; font-weight:800;" id="profName">Mehmon foydalanuvchi</div>
+        <div style="font-size:13px; opacity:0.9;" id="profPhone">+998 -- --- -- --</div>
+        <div style="font-size:11px; margin-top:4px; background:rgba(0,0,0,0.25); padding:2px 8px; border-radius:8px; display:inline-block;" id="profIdLabel">ID: aniqlanmoqda...</div>
+      </div>
+    </div>
+
+    <!-- Admin Panel kirish tugmasi -->
+    <div id="adminEntryCard" class="menu-card" style="display:none; border:2px solid var(--uzum-purple);">
+      <div class="menu-row" onclick="toggleAdminPanel()">
+        <span style="color:var(--uzum-purple); font-weight:800;">👑 ADMIN PANEL (Cheklar, Tovarlar & 3%)</span>
+        <span>▼</span>
+      </div>
+    </div>
+
+    <!-- ADMIN PANEL TO'LIQ BOSHQARUVI -->
+    <div id="adminPanelBox" class="form-card" style="display:none;">
+      <h3 style="margin-bottom:10px; color:var(--uzum-purple);">👑 Admin Boshqaruv Paneli</h3>
+      <div class="info-box">
+        <div><strong>Admin ID:</strong> 8909500947</div>
+        <div><strong>Karta:</strong> <code>4466 1369 5152 9313</code> (<strong>Jalilov Muxammadmuso</strong>)</div>
+        <div><strong>Komissiya:</strong> Har bir tasdiqlangan chekdan <strong><span id="adminCommPctLabel">3</span>%</strong> sizga tushadi.</div>
+      </div>
+
+      <div class="admin-stat-grid">
+        <div class="stat-box">
+          <div style="font-size:11px; color:var(--text-muted);">Tasdiqlangan 3% daromad</div>
+          <div class="val" id="adminTotalCommission">0 so'm</div>
+        </div>
+        <div class="stat-box">
+          <div style="font-size:11px; color:var(--text-muted);">Jami tasdiqlangan savdo</div>
+          <div class="val" id="adminTotalSales">0 so'm</div>
+        </div>
+        <div class="stat-box">
+          <div style="font-size:11px; color:var(--text-muted);">Kutilayotgan cheklar</div>
+          <div class="val" style="color:var(--orange);" id="adminPendingCount">0 ta</div>
+        </div>
+        <div class="stat-box">
+          <div style="font-size:11px; color:var(--text-muted);">Jami tovarlar</div>
+          <div class="val" id="adminProductsCount">0 ta</div>
+        </div>
+      </div>
+
+      <!-- 1. ADMIN: YUBORILGAN CHEKLARNI TEKSHIRISH VA TASDIQLASH -->
+      <h4 style="margin:14px 0 8px;">🧾 Yuborilgan cheklar (Tekshirish va Tasdiqlash)</h4>
+      <div id="adminReceiptsList"></div>
+
+      <!-- 2. ADMIN: YANGI TOVAR QO'SHISH -->
+      <h4 style="margin:16px 0 8px;">➕ Sayt va Mini App’ga yangi tovar qo'shish</h4>
+      <div style="background:#F8F9FB; padding:12px; border-radius:12px; border:1px solid var(--border); margin-bottom:12px;">
+        <div class="form-group">
+          <label>Tovar nomi</label>
+          <input type="text" id="admProdTitle" class="form-input" placeholder="Masalan: Samsung Galaxy S25 Ultra" />
+        </div>
+        <div class="form-group">
+          <label>Toifa</label>
+          <select id="admProdCat" class="form-select">
+            <option value="Elektronika">Elektronika</option>
+            <option value="Maishiy texnika">Maishiy texnika</option>
+            <option value="Kiyim">Kiyim</option>
+            <option value="Avtotovarlar">Avtotovarlar</option>
+            <option value="Go'zallik">Go'zallik</option>
+            <option value="Uy-ro'zg'or">Uy-ro'zg'or</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Narxi (so'mda)</label>
+          <input type="number" id="admProdPrice" class="form-input" placeholder="250000" />
+        </div>
+        <div class="form-group">
+          <label>Emoji yoki Rasm havolasi (https://...)</label>
+          <input type="text" id="admProdIcon" class="form-input" value="📦" placeholder="📦 yoki https://..." />
+        </div>
+        <button class="btn-primary" onclick="adminAddProduct()">➕ Tovarni qo'shish (Sayt + Mini App + Bot)</button>
+      </div>
+
+      <!-- 3. ADMIN: MAVJUD TOVARLARNI O'CHIRISH -->
+      <h4 style="margin:14px 0 8px;">🗑 Tovarlarni boshqarish va o'chirish</h4>
+      <div id="adminProductsManageList"></div>
+    </div>
+
+    <div class="menu-card">
+      <div class="menu-row" onclick="openRoleModal()">
+        <span>🔄 Ro'yxatdan o'tish (Sotuvchi / Sotib oluvchi)</span>
+        <span>›</span>
+      </div>
+      <div class="menu-row" onclick="switchPage('cart')">
+        <span>🧾 Mening buyurtmalarim va cheklarim</span>
+        <span>›</span>
+      </div>
+      <div class="menu-row" onclick="switchPage('seller')">
+        <span>🏪 Sotuvchi kabineti (Face ID)</span>
+        <span>›</span>
+      </div>
+      <div class="menu-row" onclick="toggleProfileSettings()">
+        <span>⚙️ Profil sozlamalari</span>
+        <span>›</span>
+      </div>
+      <div class="menu-row" id="webAdminLoginRow" onclick="promptWebAdminLogin()">
+        <span>🔑 Admin kirish (Sayt brauzer rejimi)</span>
+        <span>›</span>
+      </div>
+    </div>
+
+    <!-- Profil sozlamalari -->
+    <div id="profileSettingsForm" class="form-card" style="display:none;">
+      <h4 style="margin-bottom:12px;">Profil sozlamalari</h4>
+      <div class="form-group">
+        <label>Ism va Familiya</label>
+        <input type="text" id="setFullName" class="form-input" placeholder="Ism familiyangizni kiriting" />
+      </div>
+      <div class="form-group">
+        <label>Telefon raqami</label>
+        <input type="tel" id="setPhone" class="form-input" placeholder="+998 90 000 00 00" />
+      </div>
+      <div class="form-group">
+        <label>Shahar / Manzil</label>
+        <input type="text" id="setCity" class="form-input" placeholder="Masalan: Toshkent, Chilonzor 5-kvartal" />
+      </div>
+      <button class="btn-primary" onclick="saveProfileSettings()">Saqlash</button>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAVIGATION -->
+  <div class="bottom-nav">
+    <div class="nav-item active" id="nav-home" onclick="switchPage('home')">
+      <span class="nav-icon">🏠</span>
+      <span>Bosh sahifa</span>
+    </div>
+    <div class="nav-item" id="nav-catalog" onclick="switchPage('catalog')">
+      <span class="nav-icon">🔍</span>
+      <span>Katalog</span>
+    </div>
+    <div class="nav-item" id="nav-cart" onclick="switchPage('cart')">
+      <span class="nav-icon">🛍</span>
+      <span class="cart-badge" id="cartBadge">0</span>
+      <span>Savat</span>
+    </div>
+    <div class="nav-item" id="nav-seller" onclick="switchPage('seller')">
+      <span class="nav-icon">🏪</span>
+      <span>Sotuvchi</span>
+    </div>
+    <div class="nav-item" id="nav-profile" onclick="switchPage('profile')">
+      <span class="nav-icon">👤</span>
+      <span>Profil</span>
+    </div>
+  </div>
+
+  <!-- ROLE REGISTRATION MODAL -->
+  <div id="roleModal" class="modal-overlay">
+    <div class="modal-sheet">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <h3>Ro'yxatdan o'tish</h3>
+        <span style="font-size:22px; cursor:pointer;" onclick="closeRoleModal()">✕</span>
+      </div>
+
+      <div id="roleSelectStep">
+        <div class="role-choice-card" onclick="startBuyerReg()">
+          <div style="font-size:16px; font-weight:800; color:var(--uzum-purple);">🛍 1. Sotib oluvchi sifatida kirish</div>
+          <p style="font-size:13px; color:var(--text-muted); margin-top:4px;">Tovarlarni tanlash, lokatsiya kiritish va to‘lov chekini yuborish uchun.</p>
+        </div>
+
+        <div class="role-choice-card" onclick="startSellerReg()">
+          <div style="font-size:16px; font-weight:800; color:var(--uzum-purple);">🏪 2. Sotuvchi sifatida ro'yxatdan o'tish</div>
+          <p style="font-size:13px; color:var(--text-muted); margin-top:4px;">Telefon, Pasport va Face ID tekshiruvidan o‘tib o‘z tovarlaringizni sotish.</p>
+        </div>
+      </div>
+
+      <!-- BUYER FORM -->
+      <div id="buyerRegForm" style="display:none;">
+        <h4 style="margin-bottom:10px;">🛍 Sotib oluvchi ma'lumotlari</h4>
+        <div class="form-group">
+          <label>Ism va Familiyangiz</label>
+          <input type="text" id="buyerNameInput" class="form-input" placeholder="Masalan: Sardor Aliyev" />
+        </div>
+        <div class="form-group">
+          <label>Telefon raqamingiz</label>
+          <input type="tel" id="buyerPhoneInput" class="form-input" placeholder="+998 90 123 45 67" />
+        </div>
+        <button class="btn-primary" onclick="completeBuyerReg()">Saqlash va davom etish</button>
+        <button class="btn-secondary" onclick="backToRoleSelect()">Orqaga</button>
+      </div>
+
+      <!-- SELLER KYC + FACE ID FORM -->
+      <div id="sellerRegForm" style="display:none;">
+        <h4 style="margin-bottom:8px;">🏪 Sotuvchi KYC va Face ID</h4>
+        <div class="form-group">
+          <label>1. Do'kon nomi va F.I.Sh.</label>
+          <input type="text" id="sellerShopInput" class="form-input" placeholder="Masalan: UzTech — Azizov Jasur" />
+        </div>
+        <div class="form-group">
+          <label>2. Telefon raqamingiz</label>
+          <input type="tel" id="sellerPhoneInput" class="form-input" placeholder="+998 90 123 45 67" />
+        </div>
+        <div class="form-group">
+          <label>3. Pasport seriya va raqami</label>
+          <input type="text" id="sellerPassportInput" class="form-input" placeholder="AA 1234567" maxlength="10" style="text-transform:uppercase;" />
+        </div>
+        <div class="form-group">
+          <label>4. JSHSHIR (14 xonali PINFL)</label>
+          <input type="number" id="sellerPinflInput" class="form-input" placeholder="30101951234567" />
+        </div>
+
+        <div class="form-group">
+          <label>5. Face ID yuz tekshiruvi</label>
+          <div class="face-box">
+            <div class="face-ring" id="faceRing">
+              <video id="faceVideo" autoplay playsinline muted style="display:none;"></video>
+              <img id="facePreviewImg" style="display:none;" />
+              <span id="facePlaceholder" style="font-size:44px;">🪪</span>
+            </div>
+            <div id="faceStatusText" style="font-size:12px; text-align:center; margin-bottom:8px;">
+              Kamera orqali yuzingizni skanerlang yoki selfi yuklang
+            </div>
+            <div style="display:flex; gap:8px; width:100%;">
+              <button type="button" class="btn-primary" style="margin:0; font-size:12px;" onclick="startFaceCamera()">📷 Kamerani yoqish</button>
+              <button type="button" id="captureFaceBtn" class="btn-primary" style="margin:0; font-size:12px; background:var(--green); display:none;" onclick="verifyFaceID()">✅ Tasdiqlash</button>
+            </div>
+            <label style="margin-top:8px; font-size:12px; color:#B388FF; cursor:pointer; text-decoration:underline;">
+              📁 Yoki galereyadan selfi rasm tanlang
+              <input type="file" accept="image/*" style="display:none;" onchange="handleFaceFileFallback(event)" />
+            </label>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="completeSellerReg()">Sotuvchi sifatida tasdiqlash</button>
+        <button class="btn-secondary" onclick="backToRoleSelect()">Orqaga</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ================= ASOSIY SOZLAMALAR =================
+  const BOT_TOKEN = "8844601381:AAEbe9KJxrkOe57asZpya-Mr1VZ-YDamKdI";
+  const TG_API = `https://api.telegram.org/bot${BOT_TOKEN}`;
+  const ADMIN_ID = 8909500947;
+  const ADMIN_CARD = "4466 1369 5152 9313";
+  const ADMIN_OWNER = "Jalilov Muxammadmuso";
+
+  const tg = window.Telegram?.WebApp;
+  if (tg) {
+    tg.ready();
+    tg.expand();
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const tgUser = tg?.initDataUnsafe?.user;
+  let savedAdminSession = localStorage.getItem("uzum_web_admin_id") === String(ADMIN_ID);
+
+  let currentUserId = tgUser?.id || Number(urlParams.get("user_id")) || (savedAdminSession ? ADMIN_ID : 0);
+  if (!currentUserId) {
+    let storedGuestId = Number(localStorage.getItem("uzum_guest_uid"));
+    if (!storedGuestId) {
+      storedGuestId = Math.floor(100000000 + Math.random() * 899999999);
+      localStorage.setItem("uzum_guest_uid", String(storedGuestId));
+    }
+    currentUserId = storedGuestId;
+  }
+
+  function isAdminUser() {
+    return Number(currentUserId) === ADMIN_ID || savedAdminSession;
+  }
+
+  // Default boshlang'ich tovarlar
+  const DEFAULT_PRODUCTS = [
+    { id: 101, t: "Simsiz quloqchinlar Pro ANC", c: "Elektronika", p: 250000, s: "Uzum Official", sid: ADMIN_ID, i: "🎧" },
+    { id: 102, t: "Erkaklar klassik kurtkasi", c: "Kiyim", p: 380000, s: "Moda Lux", sid: ADMIN_ID, i: "🧥" },
+    { id: 103, t: "Avtomobil dvigatel tozalagichi 600ml", c: "Avtotovarlar", p: 65000, s: "AvtoMaster", sid: ADMIN_ID, i: "🧴" },
+    { id: 104, t: "Aqlli robot changyutgich", c: "Maishiy texnika", p: 1850000, s: "HomeTech", sid: ADMIN_ID, i: "🤖" }
+  ];
+
+  // Mahalliy va bulutli umumiy holat
+  let state = JSON.parse(localStorage.getItem("uzum_marke_sync_v2")) || {
+    pinnedMsgId: null,
+    settings: {
+      banner: urlParams.get("banner") || "Uzum Market — Telegram Bozor! Sotib oling va soting!",
+      maintenance: urlParams.get("maintenance") || "0",
+      commission: Number(urlParams.get("commission")) || 3
+    },
+    currentUser: {
+      id: currentUserId,
+      role: isAdminUser() ? "admin" : "guest",
+      name: tgUser ? `${tgUser.first_name || ""} ${tgUser.last_name || ""}`.trim() : "",
+      phone: "",
+      address: "",
+      lat: null,
+      lng: null,
+      shopName: "",
+      passport: "",
+      pinfl: "",
+      faceVerified: false,
+      sellerBalance: 0
+    },
+    products: DEFAULT_PRODUCTS,
+    orders: [], // { id, bn, bp, bid, tot, fee, loc, lat, lng, st: 'pending'|'approved'|'rejected', dt, items, receiptPreview }
+    cart: []
+  };
+
+  if (isAdminUser()) {
+    state.currentUser.role = "admin";
+    state.currentUser.id = ADMIN_ID;
+  }
+
+  let selectedCategory = "All";
+  let videoStream = null;
+  let capturedFaceData = "";
+  let selectedReceiptFile = null;
+  let selectedReceiptPreview = "";
+  let checkoutLocation = {
+    address: state.currentUser.address || "",
+    lat: state.currentUser.lat || null,
+    lng: state.currentUser.lng || null
+  };
+
+  function saveLocal() {
+    localStorage.setItem("uzum_marke_sync_v2", JSON.stringify(state));
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.style.display = "block";
+    setTimeout(() => { t.style.display = "none"; }, 3000);
+  }
+
+  function formatSum(num) {
+    return Math.round(Number(num) || 0).toLocaleString("ru-RU") + " so'm";
+  }
+
+  // ================= TELEGRAM CLOUD SINXRONIZATSIYA (SAYT + MINI APP + BOT) =================
+  async function pullCloudSync(manual = false) {
+    try {
+      const res = await fetch(`${TG_API}/getChat?chat_id=${ADMIN_ID}`);
+      const data = await res.json();
+      if (data.ok && data.result && data.result.pinned_message) {
+        const pm = data.result.pinned_message;
+        state.pinnedMsgId = pm.message_id;
+        if (pm.text && pm.text.startsWith("UZUM_STATE:")) {
+          const remote = JSON.parse(pm.text.slice("UZUM_STATE:".length));
+          if (remote.settings) state.settings = { ...state.settings, ...remote.settings };
+          if (Array.isArray(remote.products) && remote.products.length > 0) {
+            state.products = remote.products;
+          }
+          if (Array.isArray(remote.orders)) {
+            // Mahalliy receiptPreview rasmni saqlab qolgan holda statuslarni yangilash
+            const localMap = {};
+            state.orders.forEach(o => { localMap[o.id] = o.receiptPreview || ""; });
+            state.orders = remote.orders.map(ro => ({
+              ...ro,
+              receiptPreview: localMap[ro.id] || ro.receiptPreview || ""
+            }));
+          }
+          saveLocal();
+          renderAll();
+          if (manual) showToast("Ma'lumotlar sinxronlandi ✅");
+        }
+      }
+    } catch (err) {
+      console.log("Cloud pull info:", err);
+    }
+  }
+
+  async function pushCloudSync() {
+    saveLocal();
+    const compactPayload = {
+      settings: state.settings,
+      products: state.products.slice(0, 35).map(p => ({
+        id: p.id, t: p.t, c: p.c, p: p.p, s: p.s, sid: p.sid, i: p.i
+      })),
+      orders: state.orders.slice(0, 20).map(o => ({
+        id: o.id,
+        bn: o.bn,
+        bp: o.bp,
+        bid: o.bid,
+        tot: o.tot,
+        fee: o.fee,
+        loc: o.loc,
+        lat: o.lat,
+        lng: o.lng,
+        st: o.st,
+        dt: o.dt,
+        items: o.items
+      }))
+    };
+
+    const text = "UZUM_STATE:" + JSON.stringify(compactPayload);
+    if (text.length > 4050) return;
+
+    try {
+      if (state.pinnedMsgId) {
+        const editRes = await fetch(`${TG_API}/editMessageText`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: ADMIN_ID,
+            message_id: state.pinnedMsgId,
+            text: text
+          })
+        });
+        const editData = await editRes.json();
+        if (editData.ok) return;
+      }
+
+      const sendRes = await fetch(`${TG_API}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: ADMIN_ID,
+          text: text,
+          disable_notification: true
+        })
+      });
+      const sendData = await sendRes.json();
+      if (sendData.ok && sendData.result) {
+        state.pinnedMsgId = sendData.result.message_id;
+        saveLocal();
+        await fetch(`${TG_API}/pinChatMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: ADMIN_ID,
+            message_id: state.pinnedMsgId,
+            disable_notification: true
+          })
+        });
+      }
+    } catch (err) {
+      console.log("Cloud push info:", err);
+    }
+  }
+
+  // ================= UI RENDERING =================
+  function renderAll() {
+    // Texnik ishlar tekshiruvi
+    if (state.settings.maintenance === "1" && !isAdminUser()) {
+      document.body.innerHTML = `
+        <div style="padding:50px 20px; text-align:center; font-family:sans-serif;">
+          <div style="font-size:54px; margin-bottom:12px;">🛠</div>
+          <h2>Uzum Marketda texnik ishlar olib borilmoqda</h2>
+          <p style="color:#666; margin-top:8px;">Tez orada qayta ishga tushamiz!</p>
+        </div>`;
+      return;
+    }
+
+    const u = state.currentUser;
+    document.getElementById("bannerSubtitle").textContent = state.settings.banner;
+    document.getElementById("userCity").textContent = checkoutLocation.address
+      ? checkoutLocation.address.slice(0, 24) + (checkoutLocation.address.length > 24 ? "..." : "")
+      : "Lokatsiyani kiriting";
+
+    document.getElementById("profName").textContent = u.name || "Mehmon foydalanuvchi";
+    document.getElementById("profPhone").textContent = u.phone || "+998 -- --- -- --";
+    document.getElementById("profAvatar").textContent = (u.name || "U")[0].toUpperCase();
+    document.getElementById("profIdLabel").textContent = `ID: ${currentUserId} (${tgUser ? "Telegram Mini App" : "Veb Sayt"})`;
+
+    const badge = document.getElementById("roleBadge");
+    if (isAdminUser()) {
+      badge.textContent = "👑 ADMIN";
+      badge.classList.add("admin");
+      document.getElementById("adminEntryCard").style.display = "block";
+      document.getElementById("webAdminLoginRow").style.display = "none";
+    } else if (u.role === "seller" && u.faceVerified) {
+      badge.textContent = "✅ Sotuvchi (Face ID)";
+      badge.classList.remove("admin");
+    } else if (u.role === "buyer") {
+      badge.textContent = "🛍 Xaridor";
+      badge.classList.remove("admin");
+    } else {
+      badge.textContent = "Ro'yxatdan o'tish";
+    }
+
+    const totalCart = state.cart.reduce((sum, item) => sum + item.qty, 0);
+    document.getElementById("cartBadge").textContent = totalCart;
+
+    renderProducts();
+    renderCategories();
+    renderCart();
+    renderMyOrders();
+    renderSellerPage();
+    if (isAdminUser()) renderAdminPanel();
+  }
+
+  function switchPage(pageName) {
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+    document.getElementById(`page-${pageName}`).classList.add("active");
+    document.getElementById(`nav-${pageName}`).classList.add("active");
+    if (pageName === "cart" || pageName === "profile") {
+      pullCloudSync(false);
+    }
+  }
+
+  function renderProductVisual(iconOrUrl) {
+    if (iconOrUrl && (iconOrUrl.startsWith("http://") || iconOrUrl.startsWith("https://") || iconOrUrl.startsWith("data:image"))) {
+      return `<img src="${iconOrUrl}" alt="Tovar" onerror="this.outerHTML='<span>📦</span>'" />`;
+    }
+    return `<span>${iconOrUrl || "📦"}</span>`;
+  }
+
+  function renderProducts() {
+    const q = document.getElementById("searchInput").value.toLowerCase();
+    const grid = document.getElementById("productGrid");
+    const filtered = state.products.filter(p => {
+      const matchCat = selectedCategory === "All" || p.c === selectedCategory;
+      const matchQuery = (p.t || "").toLowerCase().includes(q) || (p.c || "").toLowerCase().includes(q);
+      return matchCat && matchQuery;
+    });
+
+    if (!filtered.length) {
+      grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:30px; color:var(--text-muted);">Mahsulot topilmadi</div>`;
+      return;
+    }
+
+    grid.innerHTML = filtered.map(p => `
+      <div class="p-card">
+        <div class="p-img">
+          ${renderProductVisual(p.i)}
+          <div class="p-badge">Original</div>
+        </div>
+        <div class="p-body">
+          <div class="p-title">${p.t}</div>
+          <div class="p-seller">🏪 ${p.s || "Uzum Official"}</div>
+          <div class="p-installment">${formatSum(p.p / 12)}/oyiga</div>
+          <div class="p-footer">
+            <div class="p-price">${formatSum(p.p)}</div>
+            <button class="add-cart-btn" onclick="addToCart(${p.id})">🛒</button>
+          </div>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function filterByCat(cat) {
+    selectedCategory = cat;
+    switchPage("home");
+    renderProducts();
+  }
+
+  function renderCategories() {
+    const cats = [
+      { name: "All", label: "Barcha mahsulotlar", icon: "🔥" },
+      { name: "Elektronika", label: "Elektronika", icon: "🎧" },
+      { name: "Maishiy texnika", label: "Maishiy texnika", icon: "🧺" },
+      { name: "Kiyim", label: "Kiyim va poyabzal", icon: "🧥" },
+      { name: "Avtotovarlar", label: "Avtotovarlar", icon: "🚗" },
+      { name: "Go'zallik", label: "Go'zallik va parvarish", icon: "💄" },
+      { name: "Uy-ro'zg'or", label: "Uy-ro'zg'or buyumlari", icon: "🏠" }
+    ];
+    document.getElementById("categoryList").innerHTML = cats.map(c => `
+      <div class="menu-row" onclick="filterByCat('${c.name}')">
+        <span>${c.icon} &nbsp; ${c.label}</span>
+        <span style="color:var(--text-muted);">›</span>
+      </div>
+    `).join("");
+  }
+
+  // ================= SAVAT, LOKATSIYA VA CHEK YUBORISH =================
+  function addToCart(productId) {
+    const existing = state.cart.find(c => c.id === productId);
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      state.cart.push({ id: productId, qty: 1 });
+    }
+    saveLocal();
+    renderAll();
+    showToast("Savatga qo'shildi ✅");
+  }
+
+  function changeCartQty(productId, delta) {
+    const idx = state.cart.findIndex(c => c.id === productId);
+    if (idx === -1) return;
+    state.cart[idx].qty += delta;
+    if (state.cart[idx].qty <= 0) {
+      state.cart.splice(idx, 1);
+    }
+    saveLocal();
+    renderAll();
+  }
+
+  function detectGPSLocation() {
+    const statusEl = document.getElementById("gpsStatusText");
+    if (!navigator.geolocation) {
+      showToast("Qurilmada GPS qo'llab-quvvatlanmaydi");
+      return;
+    }
+    statusEl.textContent = "⏳ GPS koordinatalar aniqlanmoqda...";
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        checkoutLocation.lat = Number(pos.coords.latitude.toFixed(6));
+        checkoutLocation.lng = Number(pos.coords.longitude.toFixed(6));
+        state.currentUser.lat = checkoutLocation.lat;
+        state.currentUser.lng = checkoutLocation.lng;
+        saveLocal();
+        statusEl.innerHTML = `<span style="color:var(--green); font-weight:700;">✅ GPS Lokatsiya olindi: ${checkoutLocation.lat}, ${checkoutLocation.lng}</span>`;
+        showToast("Lokatsiya muvaffaqiyatli aniqlandi! 📍");
+      },
+      (err) => {
+        statusEl.textContent = "⚠️ GPS ruxsati berilmadi. Pastdagi maydonga aniq manzilingizni yozing.";
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }
+
+  function handleReceiptSelected(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    selectedReceiptFile = file;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      selectedReceiptPreview = e.target.result;
+      const prevImg = document.getElementById("receiptPreviewImg");
+      if (prevImg) {
+        prevImg.src = selectedReceiptPreview;
+        prevImg.style.display = "block";
+      }
+    };
+    reader.readAsDataURL(file);
+    showToast("Chek rasmi yuklandi ✅");
+  }
+
+  function renderCart() {
+    const box = document.getElementById("cartContainer");
+    if (!state.cart.length) {
+      box.innerHTML = `
+        <div style="text-align:center; padding:22px 0;">
+          <div style="font-size:44px; margin-bottom:8px;">🛍</div>
+          <h4>Savatingiz bo‘sh</h4>
+          <p style="font-size:13px; color:var(--text-muted); margin-top:4px;">Bosh sahifadan kerakli tovarlarni savatga qo‘shing</p>
+        </div>`;
+      return;
+    }
+
+    let total = 0;
+    const itemsHtml = state.cart.map(c => {
+      const prod = state.products.find(p => p.id === c.id);
+      if (!prod) return "";
+      const sub = prod.p * c.qty;
+      total += sub;
+      return `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border);">
+          <div>
+            <div style="font-weight:700; font-size:14px;">${prod.t}</div>
+            <div style="font-size:12px; color:var(--text-muted);">${formatSum(prod.p)} × ${c.qty} dona</div>
+            <div class="qty-row">
+              <button class="qty-btn" onclick="changeCartQty(${prod.id}, -1)">−</button>
+              <span style="font-size:13px; font-weight:700;">${c.qty}</span>
+              <button class="qty-btn" onclick="changeCartQty(${prod.id}, 1)">+</button>
+            </div>
+          </div>
+          <div style="font-weight:800;">${formatSum(sub)}</div>
+        </div>
+      `;
+    }).join("");
+
+    const commPct = Number(state.settings.commission) || 3;
+    const adminFee = Math.round(total * (commPct / 100));
+
+    box.innerHTML = `
+      ${itemsHtml}
+
+      <div style="margin-top:12px; display:flex; justify-content:space-between; font-size:15px;">
+        <span>Jami to‘lov summasi:</span>
+        <strong style="color:var(--uzum-purple); font-size:18px;">${formatSum(total)}</strong>
+      </div>
+
+      <!-- 1. XARIDOR MA'LUMOTLARI -->
+      <div class="form-group" style="margin-top:14px;">
+        <label>1. Ism va Familiyangiz *</label>
+        <input type="text" id="chkBuyerName" class="form-input" value="${state.currentUser.name || ""}" placeholder="Ism familiyangiz" />
+      </div>
+      <div class="form-group">
+        <label>2. Telefon raqamingiz *</label>
+        <input type="tel" id="chkBuyerPhone" class="form-input" value="${state.currentUser.phone || ""}" placeholder="+998 90 123 45 67" />
+      </div>
+
+      <!-- 2. YETKAZIB BERISH LOKATSIYASI (MAJBURIY) -->
+      <div class="loc-box">
+        <div style="font-weight:800; font-size:13px; margin-bottom:6px;">📍 3. Yetkazib berish lokatsiyasi (Majburiy)</div>
+        <button type="button" class="btn-primary" style="margin:0 0 8px 0; background:#00994D; font-size:13px;" onclick="detectGPSLocation()">
+          📍 Mening GPS lokatsiyamni aniqlash
+        </button>
+        <div id="gpsStatusText" style="font-size:12px; margin-bottom:8px;">
+          ${checkoutLocation.lat ? `✅ GPS: ${checkoutLocation.lat}, ${checkoutLocation.lng}` : "Xaritadagi nuqtani olish uchun tugmani bosing yoki pastga manzilni yozing:"}
+        </div>
+        <textarea id="chkAddressInput" class="form-textarea" rows="2" placeholder="Shahar, tuman, ko'cha, uy raqami va mo'ljalni yozing...">${checkoutLocation.address || ""}</textarea>
+      </div>
+
+      <!-- 3. TO'LOV KARTASI VA CHEK YUKLASH -->
+      <div class="info-box">
+        <div style="font-weight:800; margin-bottom:4px;">💳 4. To‘lov kartasi va Chek yuborish</div>
+        <div>Karta raqami: <code style="font-size:14px; font-weight:800;">${ADMIN_CARD}</code></div>
+        <div>Karta egasi: <strong>${ADMIN_OWNER}</strong></div>
+        <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">
+          Ushbu kartaga <strong>${formatSum(total)}</strong> o‘tkazing va to‘lov cheki skrinshotini yuklang (ichida ${commPct}% = ${formatSum(adminFee)} platforma komissiyasi).
+        </div>
+        <div style="margin-top:8px;">
+          <input type="file" id="receiptFileInput" accept="image/*" class="form-input" onchange="handleReceiptSelected(event)" />
+          <img id="receiptPreviewImg" src="${selectedReceiptPreview}" style="display:${selectedReceiptPreview ? "block" : "none"}; width:100%; max-height:180px; object-fit:contain; margin-top:8px; border-radius:10px; border:1px solid var(--border);" />
+        </div>
+      </div>
+
+      <button id="submitOrderBtn" class="btn-primary" onclick="submitOrderWithReceipt()">✅ Chek va Lokatsiyani yuborish</button>
+    `;
+  }
+
+  async function submitOrderWithReceipt() {
+    const buyerName = document.getElementById("chkBuyerName").value.trim();
+    const buyerPhone = document.getElementById("chkBuyerPhone").value.trim();
+    const addressText = document.getElementById("chkAddressInput").value.trim();
+
+    if (!buyerName || buyerPhone.length < 7) {
+      showToast("Ism va telefon raqamingizni kiriting!");
+      return;
+    }
+    if (!addressText && !checkoutLocation.lat) {
+      showToast("Iltimos, yetkazib berish lokatsiyasini yoki manzilini kiriting!");
+      return;
+    }
+    if (!selectedReceiptFile && !selectedReceiptPreview) {
+      showToast("Iltimos, avval to'lov cheki rasmini yuklang!");
+      return;
+    }
+
+    const btn = document.getElementById("submitOrderBtn");
+    btn.disabled = true;
+    btn.textContent = "⏳ Chek va lokatsiya yuborilmoqda...";
+
+    // Profil va lokatsiyani saqlash
+    state.currentUser.name = buyerName;
+    state.currentUser.phone = buyerPhone;
+    state.currentUser.address = addressText;
+    checkoutLocation.address = addressText;
+    if (state.currentUser.role === "guest") state.currentUser.role = "buyer";
+
+    let total = 0;
+    const itemTitles = [];
+    state.cart.forEach(c => {
+      const prod = state.products.find(p => p.id === c.id);
+      if (prod) {
+        total += prod.p * c.qty;
+        itemTitles.push(`${prod.t} (${c.qty}x)`);
+      }
+    });
+
+    const commPct = Number(state.settings.commission) || 3;
+    const adminFee = Math.round(total * (commPct / 100));
+    const orderId = Math.floor(100000 + Math.random() * 900000);
+    const mapLink = checkoutLocation.lat
+      ? `https://maps.google.com/?q=${checkoutLocation.lat},${checkoutLocation.lng}`
+      : "";
+    const fullLocationStr = [addressText, mapLink].filter(Boolean).join(" | ");
+
+    const newOrder = {
+      id: orderId,
+      bn: buyerName,
+      bp: buyerPhone,
+      bid: currentUserId,
+      tot: total,
+      fee: adminFee,
+      loc: fullLocationStr,
+      lat: checkoutLocation.lat,
+      lng: checkoutLocation.lng,
+      st: "pending", // pending | approved | rejected
+      dt: new Date().toLocaleString("uz-UZ"),
+      items: itemTitles.join(", "),
+      receiptPreview: selectedReceiptPreview
+    };
+
+    // 1. Chek rasmini va tugmalarni to'g'ridan-to'g'ri Admin Telegramiga yuborish
+    const caption =
+      `🧾 <b>YANGI CHEK VA BUYURTMA #${orderId}</b>\n\n` +
+      `👤 <b>Xaridor:</b> ${buyerName} (ID: <code>${currentUserId}</code>)\n` +
+      `📞 <b>Telefon:</b> ${buyerPhone}\n` +
+      `📦 <b>Tovarlar:</b> ${newOrder.items}\n` +
+      `💵 <b>Jami summa:</b> ${formatSum(total)}\n` +
+      `👑 <b>Admin ${commPct}% ulushi:</b> +${formatSum(adminFee)}\n` +
+      `📍 <b>Lokatsiya:</b> ${addressText || "GPS nuqta"}\n` +
+      (mapLink ? `🗺 <a href="${mapLink}">Xaritada ochish</a>\n` : "") +
+      `\n⏳ <i>Chekni tekshirib tasdiqlang:</i>`;
+
+    const inlineMarkup = {
+      inline_keyboard: [
+        [
+          { text: "✅ Chekni tasdiqlash", callback_data: `approve_ord_${orderId}` },
+          { text: "❌ Rad etish", callback_data: `reject_ord_${orderId}` }
+        ]
+      ]
+    };
+
+    try {
+      if (selectedReceiptFile) {
+        const fd = new FormData();
+        fd.append("chat_id", String(ADMIN_ID));
+        fd.append("photo", selectedReceiptFile);
+        fd.append("caption", caption);
+        fd.append("parse_mode", "HTML");
+        fd.append("reply_markup", JSON.stringify(inlineMarkup));
+        await fetch(`${TG_API}/sendPhoto`, { method: "POST", body: fd });
+      } else {
+        await fetch(`${TG_API}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: ADMIN_ID,
+            text: caption,
+            parse_mode: "HTML",
+            reply_markup: inlineMarkup
+          })
+        });
+      }
+
+      if (checkoutLocation.lat && checkoutLocation.lng) {
+        await fetch(`${TG_API}/sendLocation`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: ADMIN_ID,
+            latitude: checkoutLocation.lat,
+            longitude: checkoutLocation.lng
+          })
+        });
+      }
+    } catch (e) {
+      console.log("Send receipt error:", e);
+    }
+
+    // 2. Sayt, Mini App va Bot umumiy bazasiga qo'shish
+    state.orders.unshift(newOrder);
+    state.cart = [];
+    selectedReceiptFile = null;
+    selectedReceiptPreview = "";
+
+    await pushCloudSync();
+    renderAll();
+    showToast("Chek va lokatsiya yuborildi! Admin tasdiqlashini kuting ⏳");
+  }
+
+  function renderStatusBadge(st) {
+    if (st === "approved") return `<span class="status-pill status-approved">✅ Tasdiqlangan</span>`;
+    if (st === "rejected") return `<span class="status-pill status-rejected">❌ Rad etilgan</span>`;
+    return `<span class="status-pill status-pending">⏳ Admin tekshirmoqda</span>`;
+  }
+
+  function renderMyOrders() {
+    const box = document.getElementById("myOrdersContainer");
+    const myList = isAdminUser()
+      ? state.orders
+      : state.orders.filter(o => Number(o.bid) === Number(currentUserId));
+
+    if (!myList.length) {
+      box.innerHTML = `<div style="font-size:13px; color:var(--text-muted); text-align:center;">Hozircha yuborilgan cheklar yo‘q</div>`;
+      return;
+    }
+
+    box.innerHTML = myList.map(o => `
+      <div style="padding:10px 0; border-bottom:1px solid var(--border); font-size:13px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+          <strong>Buyurtma #${o.id}</strong>
+          ${renderStatusBadge(o.st)}
+        </div>
+        <div>📦 ${o.items}</div>
+        <div>💵 Summa: <strong>${formatSum(o.tot)}</strong></div>
+        <div>📍 Lokatsiya: ${o.loc}</div>
+        <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">🕒 ${o.dt}</div>
+      </div>
+    `).join("");
+  }
+
+  // ================= ADMIN PANEL FUNKSIYALARI (SAYT & MINI APP) =================
+  function toggleAdminPanel() {
+    const p = document.getElementById("adminPanelBox");
+    p.style.display = p.style.display === "none" ? "block" : "none";
+    renderAdminPanel();
+  }
+
+  function renderAdminPanel() {
+    document.getElementById("adminCommPctLabel").textContent = state.settings.commission;
+    const approvedOrders = state.orders.filter(o => o.st === "approved");
+    const pendingOrders = state.orders.filter(o => o.st === "pending");
+
+    const totalSales = approvedOrders.reduce((s, o) => s + Number(o.tot || 0), 0);
+    const totalComm = approvedOrders.reduce((s, o) => s + Number(o.fee || 0), 0);
+
+    document.getElementById("adminTotalSales").textContent = formatSum(totalSales);
+    document.getElementById("adminTotalCommission").textContent = formatSum(totalComm);
+    document.getElementById("adminPendingCount").textContent = pendingOrders.length + " ta";
+    document.getElementById("adminProductsCount").textContent = state.products.length + " ta";
+
+    // Cheklar ro'yxati
+    const recBox = document.getElementById("adminReceiptsList");
+    if (!state.orders.length) {
+      recBox.innerHTML = `<div style="font-size:13px; color:var(--text-muted);">Hozircha cheklar yo‘q</div>`;
+    } else {
+      recBox.innerHTML = state.orders.map(o => `
+        <div style="border:1px solid var(--border); border-radius:12px; padding:10px; margin-bottom:8px; font-size:13px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong>#${o.id} — ${o.bn}</strong>
+            ${renderStatusBadge(o.st)}
+          </div>
+          <div>📞 ${o.bp} | 💵 <strong>${formatSum(o.tot)}</strong> (3%: +${formatSum(o.fee)})</div>
+          <div>📦 ${o.items}</div>
+          <div>📍 ${o.loc}</div>
+          ${o.receiptPreview ? `<img src="${o.receiptPreview}" style="width:100%; max-height:160px; object-fit:contain; margin-top:6px; border-radius:8px;" />` : ""}
+          ${o.st === "pending" ? `
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <button class="btn-green" onclick="adminDecideOrder(${o.id}, 'approved')">✅ Chekni tasdiqlash</button>
+              <button class="btn-red" onclick="adminDecideOrder(${o.id}, 'rejected')">❌ Rad etish</button>
+            </div>
+          ` : ""}
+        </div>
+      `).join("");
+    }
+
+    // Tovarlarni boshqarish va o'chirish ro'yxati
+    const prodBox = document.getElementById("adminProductsManageList");
+    prodBox.innerHTML = state.products.map(p => `
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border:1px solid var(--border); border-radius:10px; margin-bottom:6px; font-size:13px;">
+        <div>
+          <strong>${p.t}</strong>
+          <div style="font-size:11px; color:var(--text-muted);">${p.c} • ${formatSum(p.p)}</div>
+        </div>
+        <button class="btn-red" onclick="adminDeleteProduct(${p.id})">🗑 O'chirish</button>
+      </div>
+    `).join("");
+  }
+
+  async function adminDecideOrder(orderId, decision) {
+    if (!isAdminUser()) return;
+    const ord = state.orders.find(o => Number(o.id) === Number(orderId));
+    if (!ord) return;
+
+    ord.st = decision;
+    await pushCloudSync();
+    renderAll();
+
+    const statusText = decision === "approved"
+      ? `✅ Sizning #${orderId} raqamli buyurtmangiz cheki Admin tomonidan TASDIQLANDI! Tez orada yetkazib beriladi.`
+      : `❌ Sizning #${orderId} raqamli buyurtmangiz cheki RAD ETILDI. Iltimos, qayta tekshirib yuboring.`;
+
+    if (ord.bid) {
+      try {
+        await fetch(`${TG_API}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: ord.bid, text: statusText })
+        });
+      } catch (e) {}
+    }
+
+    showToast(decision === "approved" ? "Chek tasdiqlandi! ✅" : "Chek rad etildi ❌");
+  }
+
+  async function adminAddProduct() {
+    if (!isAdminUser()) return;
+    const title = document.getElementById("admProdTitle").value.trim();
+    const cat = document.getElementById("admProdCat").value;
+    const price = Number(document.getElementById("admProdPrice").value);
+    const icon = document.getElementById("admProdIcon").value.trim() || "📦";
+
+    if (!title || price <= 0) {
+      showToast("Tovar nomi va narxini kiriting!");
+      return;
+    }
+
+    state.products.unshift({
+      id: Date.now(),
+      t: title,
+      c: cat,
+      p: price,
+      s: "Uzum Official",
+      sid: ADMIN_ID,
+      i: icon
+    });
+
+    document.getElementById("admProdTitle").value = "";
+    document.getElementById("admProdPrice").value = "";
+    await pushCloudSync();
+    renderAll();
+    showToast("Yangi tovar qo'shildi va barcha platformalarda yangilandi! ✅");
+  }
+
+  async function adminDeleteProduct(prodId) {
+    if (!isAdminUser()) return;
+    state.products = state.products.filter(p => Number(p.id) !== Number(prodId));
+    await pushCloudSync();
+    renderAll();
+    showToast("Tovar o'chirildi 🗑");
+  }
+
+  // ================= SOTUVCHI SAHIFASI VA FACE ID =================
+  function renderSellerPage() {
+    const box = document.getElementById("sellerContent");
+    const u = state.currentUser;
+
+    if (u.role !== "seller" || !u.faceVerified) {
+      box.innerHTML = `
+        <div class="form-card" style="text-align:center;">
+          <div style="font-size:48px; margin-bottom:8px;">🪪</div>
+          <h3>Sotuvchi sifatida tasdiqlanmagansiz</h3>
+          <p style="font-size:13px; color:var(--text-muted); margin:8px 0 14px;">
+            Tovar joylash uchun Telefon raqami, Pasport ma'lumotlari va Face ID tekshiruvidan o‘ting.
+          </p>
+          <button class="btn-primary" onclick="startSellerReg(); document.getElementById('roleModal').classList.add('open');">
+            Sotuvchi ro'yxatidan o'tish (Face ID)
+          </button>
+        </div>
+      `;
+      return;
+    }
+
+    box.innerHTML = `
+      <div class="form-card">
+        <div style="font-weight:800; font-size:16px;">🏪 ${u.shopName || u.name}</div>
+        <div style="font-size:12px; color:var(--green); font-weight:700; margin-top:2px;">✅ Pasport & Face ID tasdiqlangan</div>
+      </div>
+      <div class="form-card">
+        <h4 style="margin-bottom:10px;">➕ Yangi tovar joylash</h4>
+        <div class="form-group">
+          <label>Tovar nomi</label>
+          <input type="text" id="selProdTitle" class="form-input" placeholder="Tovar nomi" />
+        </div>
+        <div class="form-group">
+          <label>Toifa</label>
+          <select id="selProdCat" class="form-select">
+            <option value="Elektronika">Elektronika</option>
+            <option value="Maishiy texnika">Maishiy texnika</option>
+            <option value="Kiyim">Kiyim</option>
+            <option value="Avtotovarlar">Avtotovarlar</option>
+            <option value="Go'zallik">Go'zallik</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Narxi (so'm)</label>
+          <input type="number" id="selProdPrice" class="form-input" placeholder="120000" />
+        </div>
+        <div class="form-group">
+          <label>Emoji yoki Rasm URL</label>
+          <input type="text" id="selProdIcon" class="form-input" value="📦" />
+        </div>
+        <button class="btn-primary" onclick="sellerAddProduct()">Sotuvga chiqarish</button>
+      </div>
+    `;
+  }
+
+  async function sellerAddProduct() {
+    const title = document.getElementById("selProdTitle").value.trim();
+    const cat = document.getElementById("selProdCat").value;
+    const price = Number(document.getElementById("selProdPrice").value);
+    const icon = document.getElementById("selProdIcon").value.trim() || "📦";
+
+    if (!title || price <= 0) {
+      showToast("Tovar nomi va narxini kiriting!");
+      return;
+    }
+
+    state.products.unshift({
+      id: Date.now(),
+      t: title,
+      c: cat,
+      p: price,
+      s: state.currentUser.shopName || state.currentUser.name,
+      sid: currentUserId,
+      i: icon
+    });
+    await pushCloudSync();
+    renderAll();
+    showToast("Tovaringiz katalogga qo'shildi! ✅");
+    switchPage("home");
+  }
+
+  // ================= RO'YXATDAN O'TISH MODALI =================
+  function openRoleModal() {
+    backToRoleSelect();
+    document.getElementById("roleModal").classList.add("open");
+  }
+
+  function closeRoleModal() {
+    stopFaceCamera();
+    document.getElementById("roleModal").classList.remove("open");
+  }
+
+  function backToRoleSelect() {
+    document.getElementById("roleSelectStep").style.display = "block";
+    document.getElementById("buyerRegForm").style.display = "none";
+    document.getElementById("sellerRegForm").style.display = "none";
+  }
+
+  function startBuyerReg() {
+    document.getElementById("roleSelectStep").style.display = "none";
+    document.getElementById("buyerRegForm").style.display = "block";
+  }
+
+  function startSellerReg() {
+    document.getElementById("roleSelectStep").style.display = "none";
+    document.getElementById("sellerRegForm").style.display = "block";
+  }
+
+  function completeBuyerReg() {
+    const name = document.getElementById("buyerNameInput").value.trim();
+    const phone = document.getElementById("buyerPhoneInput").value.trim();
+    if (!name || phone.length < 7) {
+      showToast("Ism va telefon raqamingizni kiriting!");
+      return;
+    }
+    state.currentUser.role = "buyer";
+    state.currentUser.name = name;
+    state.currentUser.phone = phone;
+    saveLocal();
+    closeRoleModal();
+    renderAll();
+    showToast("Xaridor sifatida kirdingiz! ✅");
+  }
+
+  async function startFaceCamera() {
+    try {
+      const video = document.getElementById("faceVideo");
+      videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+      video.srcObject = videoStream;
+      video.style.display = "block";
+      document.getElementById("facePlaceholder").style.display = "none";
+      document.getElementById("captureFaceBtn").style.display = "block";
+      document.getElementById("faceStatusText").textContent = "Yuzingizni doiraga to'g'rilab 'Tasdiqlash' ni bosing";
+    } catch (e) {
+      document.getElementById("faceStatusText").textContent = "Kameraga ruxsat yo'q. Pastdan selfi rasm yuklang.";
+    }
+  }
+
+  function stopFaceCamera() {
+    if (videoStream) {
+      videoStream.getTracks().forEach(t => t.stop());
+      videoStream = null;
+    }
+  }
+
+  function verifyFaceID() {
+    const video = document.getElementById("faceVideo");
+    const img = document.getElementById("facePreviewImg");
+    if (videoStream && video.videoWidth > 0) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 220;
+      canvas.height = 220;
+      canvas.getContext("2d").drawImage(video, 0, 0, 220, 220);
+      capturedFaceData = canvas.toDataURL("image/jpeg", 0.7);
+      img.src = capturedFaceData;
+      img.style.display = "block";
+      video.style.display = "none";
+    }
+    stopFaceCamera();
+    document.getElementById("faceRing").classList.add("verified");
+    state.currentUser.faceVerified = true;
+    document.getElementById("faceStatusText").innerHTML = `<span style="color:#00FF88; font-weight:700;">✅ Face ID tasdiqlandi!</span>`;
+  }
+
+  function handleFaceFileFallback(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = document.getElementById("facePreviewImg");
+      img.src = ev.target.result;
+      img.style.display = "block";
+      document.getElementById("facePlaceholder").style.display = "none";
+      document.getElementById("faceRing").classList.add("verified");
+      state.currentUser.faceVerified = true;
+      document.getElementById("faceStatusText").innerHTML = `<span style="color:#00FF88; font-weight:700;">✅ Face ID rasm orqali tasdiqlandi!</span>`;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function completeSellerReg() {
+    const shopName = document.getElementById("sellerShopInput").value.trim();
+    const phone = document.getElementById("sellerPhoneInput").value.trim();
+    const passport = document.getElementById("sellerPassportInput").value.trim().toUpperCase();
+    const pinfl = document.getElementById("sellerPinflInput").value.trim();
+
+    if (!shopName || phone.length < 7 || passport.length < 7 || pinfl.length !== 14) {
+      showToast("Barcha ma'lumotlar va 14 xonali JSHSHIR ni to'g'ri kiriting!");
+      return;
+    }
+    if (!state.currentUser.faceVerified) {
+      showToast("Avval Face ID yuz tekshiruvidan o'ting!");
+      return;
+    }
+
+    state.currentUser.role = "seller";
+    state.currentUser.name = shopName;
+    state.currentUser.shopName = shopName;
+    state.currentUser.phone = phone;
+    state.currentUser.passport = passport;
+    state.currentUser.pinfl = pinfl;
+    saveLocal();
+
+    try {
+      await fetch(`${TG_API}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: ADMIN_ID,
+          parse_mode: "HTML",
+          text: `🏪 <b>Yangi Sotuvchi ro'yxatdan o'tdi!</b>\nDo'kon: ${shopName}\nID: <code>${currentUserId}</code>\nTel: ${phone}\nPasport: <code>${passport}</code>\nJSHSHIR: <code>${pinfl}</code>\nFace ID: ✅`
+        })
+      });
+    } catch (e) {}
+
+    closeRoleModal();
+    renderAll();
+    showToast("Sotuvchi sifatida tasdiqlandingiz! 🎉");
+    switchPage("seller");
+  }
+
+  function toggleProfileSettings() {
+    const f = document.getElementById("profileSettingsForm");
+    f.style.display = f.style.display === "none" ? "block" : "none";
+    document.getElementById("setFullName").value = state.currentUser.name || "";
+    document.getElementById("setPhone").value = state.currentUser.phone || "";
+    document.getElementById("setCity").value = state.currentUser.address || "";
+  }
+
+  function saveProfileSettings() {
+    state.currentUser.name = document.getElementById("setFullName").value.trim();
+    state.currentUser.phone = document.getElementById("setPhone").value.trim();
+    state.currentUser.address = document.getElementById("setCity").value.trim();
+    checkoutLocation.address = state.currentUser.address;
+    saveLocal();
+    toggleProfileSettings();
+    renderAll();
+    showToast("Profil saqlandi ✅");
+  }
+
+  function promptWebAdminLogin() {
+    const entered = prompt("Admin Telegram ID raqamingizni kiriting:");
+    if (entered && Number(entered.trim()) === ADMIN_ID) {
+      savedAdminSession = true;
+      currentUserId = ADMIN_ID;
+      state.currentUser.id = ADMIN_ID;
+      state.currentUser.role = "admin";
+      localStorage.setItem("uzum_web_admin_id", String(ADMIN_ID));
+      saveLocal();
+      renderAll();
+      showToast("Admin sifatida kirdingiz! 👑");
+    } else if (entered) {
+      showToast("Admin ID noto'g'ri ❌");
+    }
+  }
+
+  // Dastlabki ishga tushirish va bulutli sinxronizatsiya
+  renderAll();
+  pullCloudSync(false);
+</script>
+</body>
+</html>
